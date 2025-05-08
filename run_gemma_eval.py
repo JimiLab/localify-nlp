@@ -193,7 +193,7 @@ ckpt = "google/gemma-3-4b-it"
 gemma_model = Gemma3ForCausalLM.from_pretrained(
     ckpt,
     torch_dtype=torch.bfloat16,
-    device_map="auto",
+    device_map="cpu",
     use_auth_token=conf['gemma-key'],
     low_cpu_mem_usage=True,
 )
@@ -223,5 +223,5 @@ Provide me with only the ranked list of integer IDs associated with the ranking,
 gw_3 = GemmaWrapper(gemma_model, gemma_tokenizer, system_prompt_3)
 gemma_3 = InternalRecommender(artists, prompt_3, gw_3)
 evaluator_gemma_3 = Evaluator(gemma_3, artist_ids, seeds)
-gemma_3_score = evaluator_gemma_3.eval_model()
+gemma_3_score = evaluator_gemma_3.eval_model(use_genres=True)
 print("Experiment 2 Gemma Score:", gemma_3_score)
