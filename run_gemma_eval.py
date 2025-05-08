@@ -1,5 +1,4 @@
 from typing import List
-from openai import OpenAI
 import yaml
 import json
 import bidict
@@ -8,8 +7,12 @@ from typing import Tuple
 from math import ceil
 from random import sample
 import numpy as np
-import torch
+import torch, gc
 from transformers import AutoTokenizer, Gemma3ForCausalLM
+
+
+torch.cuda.empty_cache()
+gc.collect()
 
 
 class GemmaWrapper:
@@ -188,7 +191,7 @@ with open('conf.yaml') as file:
 
 ckpt = "google/gemma-3-4b-it"
 gemma_model = Gemma3ForCausalLM.from_pretrained(
-    "google/gemma-3-4b-it",
+    ckpt,
     torch_dtype=torch.bfloat16,
     device_map="auto",
     use_auth_token=conf['gemma-key'],
@@ -214,11 +217,8 @@ An example recommendation would be as follows:
 With each hashtag replaced by the artist you recommend in that position.
 Provide me with only the ranked list of integer IDs associated with the ranking, do not enumerate your thought process.
 """
-seeds_trunc = [x for x in seeds]
-shuffle(seeds_trunc)
-seeds_trunc = seeds_trunc[:30]
 gw_2 = GemmaWrapper(gemma_model, gemma_tokenizer, system_prompt_2)
 gemma_2 = InternalRecommender(artists, prompt_2, gw_2)
-evaluator_gemma_2 = Evaluator(gemma_2, artist_ids, seeds_trunc)
+evaluator_gemma_2 = Evaluator(gemma_2, artist_ids, seeds)
 gemma_2_score = evaluator_gemma_2.eval_model()
 print("Experiment 2 Gemma Score:", gemma_2_score)
