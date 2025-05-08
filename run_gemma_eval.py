@@ -51,7 +51,7 @@ class GemmaWrapper:
         generation = generation[0][input_len:]
 
         decoded = self.tokenizer.decode(generation, skip_special_tokens=True)
-        print(decoded)
+        #print(decoded)
         return decoded
 
 
@@ -86,9 +86,9 @@ class InternalRecommender(Recommender):
 
     def recommend(self, seed_ids: List[str], candidate_ids: List[str]) -> List[str]:
         #print('Seeds: ')
-        print(seed_ids)
+        #print(seed_ids)
         #print('Candidates: ')
-        print(candidate_ids)
+        #print(candidate_ids)
         iids = list(range(len(candidate_ids)))
         candidate_dict = bidict.bidict({candidate_ids[i]: iids[i] for i in range(len(candidate_ids))})
         seed_names = '\n'.join([self.artists[_id]['name'] for _id in seed_ids])
@@ -96,8 +96,8 @@ class InternalRecommender(Recommender):
         candidate_dict_text = '\n'.join([f"{candidate_dict[_id]}: {self.artists[_id]['name']}" for _id in candidate_ids])
         _prompt = self.prompt.format(seeds=seed_names, candidates=candidate_names, candidate_key=candidate_dict_text)
         text = self.gw.get_response(_prompt)
-        print("Response Text: ")
-        print(text, end="\n\n")
+        #print("Response Text: ")
+        #print(text, end="\n\n")
         return self.parse_output(text, candidate_dict)
 
 
@@ -153,7 +153,7 @@ class Evaluator:
 
         # ChatGPT doesn't always return the full list, so pad with a sampled list of 1s and 0s according to the appropriate proportions
         size_difference = len(candidates) - len(relevances)
-        print('Difference', size_difference)
+        #print('Difference', size_difference)
         if size_difference > 0:
             num_pos = len([x for x in relevances if x == 1])
             prop_pos = num_pos / len(relevances)
@@ -161,10 +161,10 @@ class Evaluator:
             pad_pos = size_difference - pad_neg
             padding = [0 for i in range(pad_neg)] + [1 for i in range(pad_pos)]
             shuffle(padding)
-            print('Padding:', padding)
+            #print('Padding:', padding)
             relevances += padding
 
-        print(relevances)
+        #print(relevances)
         return calc_auc_score(relevances)
 
     def eval_model(self):
