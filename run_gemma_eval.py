@@ -62,7 +62,7 @@ class Recommender:
         self.artists = artists
         self.prompt = prompt
 
-    def recommend(self, seed_ids: List[str], candidate_ids: List[str]) -> List[str]:
+    def recommend(self, seed_ids: List[str], candidate_ids: List[str], use_genres=False) -> List[str]:
         raise NotImplementedError(f'{self.__class__} class is an interface and not intended for instantiation.')
 
     def parse_output(self, output, candidate_dict):
@@ -84,15 +84,15 @@ class InternalRecommender(Recommender):
         super().__init__(artists, prompt)
         self.gw = gemma_wrapper
 
-    def recommend(self, seed_ids: List[str], candidate_ids: List[str]) -> List[str]:
+    def recommend(self, seed_ids: List[str], candidate_ids: List[str], use_genres=False) -> List[str]:
         #print('Seeds: ')
         #print(seed_ids)
         #print('Candidates: ')
         #print(candidate_ids)
         iids = list(range(len(candidate_ids)))
         candidate_dict = bidict.bidict({candidate_ids[i]: iids[i] for i in range(len(candidate_ids))})
-        seed_names = '\n'.join([self.artists[_id]['name'] for _id in seed_ids])
-        candidate_names = '\n'.join([self.artists[_id]['name'] for _id in candidate_ids])
+        seed_names = '\n'.join([self.artists[_id]['name'] + ('' if not use_genres else f" ({', '.join(self.artists[_id]['genres'])})") for _id in seed_ids])
+        candidate_names = '\n'.join([self.artists[_id]['name'] + ('' if not use_genres else f" ({', '.join(self.artists[_id]['genres'])})") for _id in candidate_ids])
         candidate_dict_text = '\n'.join([f"{candidate_dict[_id]}: {self.artists[_id]['name']}" for _id in candidate_ids])
         _prompt = self.prompt.format(seeds=seed_names, candidates=candidate_names, candidate_key=candidate_dict_text)
         text = self.gw.get_response(_prompt)
@@ -132,7 +132,7 @@ class Evaluator:
         self.artist_ids = artist_ids
         self.seed_lists = seed_lists
 
-    def do_trial(self, seed_ids):
+    def do_trial(self, seed_ids, use_genres=False):
         split = ceil(len(seed_ids) * 0.5)
         shuffle(seed_ids)
         masked = seed_ids[split:]
@@ -145,7 +145,7 @@ class Evaluator:
 
         candidates = masked + distractors
         shuffle(candidates)
-        results = self.recommender.recommend(unmasked, candidates)
+        results = self.recommender.recommend(unmasked, candidates, use_genres)
         if results is None:
             return -1
 
@@ -167,10 +167,10 @@ class Evaluator:
         #print(relevances)
         return calc_auc_score(relevances)
 
-    def eval_model(self):
+    def eval_model(self, use_genres=False):
         scores = []
         for seed_ids in self.seed_lists:
-            score = self.do_trial(seed_ids)
+            score = self.do_trial(seed_ids, use_genres)
             print('Score:', score)
             if score != -1:
                 scores.append(score)
@@ -203,22 +203,25 @@ gemma_tokenizer = AutoTokenizer.from_pretrained(
     use_auth_token=conf['gemma-key'],
 )
 
-system_prompt_2 = "You are an expert in music recommendation. Your specialty is in ranking a list of artists by how similar each one is to a different set of artists that someone already knows."
-prompt_2 = """
+system_prompt_3 = "You are an expert in music recommendation. Your specialty is in ranking a list of artists by how similar each one is to a different set of artists that someone already knows."
+prompt_3 = """
 You are presented with a client who frequently listens to the following artists:
 {seeds}
+
 You are asked to use your expert knowledge of these artists to rank the following artists (on which you are also an expert) in order from most recommended to least recommended:
 {candidates}
+
 You must present these recommendations in a very specific way. Each candidate artist that you are recommending has an integer ID associated with them. The key is as follows:
 {candidate_key}
+
 You must finish your response by listing your recommendations only using these ids, separated by commas, and surrounded by <>.
 An example recommendation would be as follows:
 <#,#,#,#,#,#,#,#,#,#,...>
 With each hashtag replaced by the artist you recommend in that position.
 Provide me with only the ranked list of integer IDs associated with the ranking, do not enumerate your thought process.
 """
-gw_2 = GemmaWrapper(gemma_model, gemma_tokenizer, system_prompt_2)
-gemma_2 = InternalRecommender(artists, prompt_2, gw_2)
-evaluator_gemma_2 = Evaluator(gemma_2, artist_ids, seeds)
-gemma_2_score = evaluator_gemma_2.eval_model()
-print("Experiment 2 Gemma Score:", gemma_2_score)
+gw_3 = GemmaWrapper(gemma_model, gemma_tokenizer, system_prompt_3)
+gemma_3 = InternalRecommender(artists, prompt_3, gw_3)
+evaluator_gemma_3 = Evaluator(gemma_3, artist_ids, seeds)
+gemma_3_score = evaluator_gemma_3.eval_model()
+print("Experiment 2 Gemma Score:", gemma_3_score)
