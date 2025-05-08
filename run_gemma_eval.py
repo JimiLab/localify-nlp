@@ -136,9 +136,9 @@ class Evaluator:
         split = ceil(len(seed_ids) * 0.5)
         shuffle(seed_ids)
         masked = seed_ids[split:]
-        shuffle(masked)
-        masked = masked[:30] if len(masked) >= 30 else masked
+        masked = masked[:10] if len(masked) >= 10 else masked
         unmasked = seed_ids[:split]
+        unmasked = unmasked[:10] if len(unmasked) >= 10 else unmasked
 
         potential_distractors = [_id for _id in self.artist_ids if _id not in seed_ids]
         distractors = sample(potential_distractors, len(masked))
