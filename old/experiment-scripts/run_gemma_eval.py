@@ -186,7 +186,7 @@ artists = load_json("nlp_artists_filtered.json")
 seeds = load_json("nlp_seeds_anonymized.json")
 artist_ids = [k for k in artists.keys()]
 
-with open('conf.yaml') as file:
+with open('../../conf.yaml') as file:
     conf = yaml.safe_load(file)
 
 ckpt = "google/gemma-3-4b-it"
