@@ -7,7 +7,7 @@ from utils import load_json, load_yaml
 
 
 def main():
-    name = "Descriptions By Contrast"
+    name = "Descriptions By Example"
 
     artists = load_json("../nlp_artists_filtered.json")
     seeds = load_json("../nlp_seeds_anonymized.json")
@@ -39,19 +39,21 @@ With each hashtag replaced by the artist you recommend in that position. You mus
     embed_prompt = """You are an expert in describing people's music listening habits. You are presented with a client who listens to the following artists:
 {seeds}
 
-You are also presented with the following other users' familiar artists:
-{other_seeds}
+Give a textual description of this person's listening habits, without using artist names. Write this description according to the following example, but the details should correspond to the user I have provided.
 
-Give a textual description of this person's listening habits, without using artist names. Focus on how your client's listening habits differ from the habits of the other users (what makes them unique). Do not directly mention these other users.
+Your musical taste weaves velvety jazz-infused neo-soul with driving, synth-heavy electronic grooves that effortlessly blend warmth and futurism. 
+You gravitate toward smoky, upright-bass-led lounge numbers that evoke intimate club corners, alongside pulsating house tracks that ignite late-night dancefloors. 
+You refresh your sets with experimental ambient textures and lo-fi hip-hop beats that layer nostalgic vinyl crackle over head-nodding rhythms, while occasional avant-garde free-jazz injections add daring dissonance. 
+This balance of cozy soulfulness and boundary-pushing sonic exploration speaks to your love of music that soothes and stimulates in equal measure. 
+The result is a listening profile rooted in sophistication and spontaneity, comfort and curiosity, offering a journey that feels both familiar and thrilling.
 """
 
-    gpt = GPTRecommender(artists, prompt, client, embed_prompt=embed_prompt, seeds=seeds)
+    gpt = GPTRecommender(artists, prompt, client, embed_prompt=embed_prompt)
     evaluator = Evaluator(gpt, artist_ids, seeds)
     results = evaluator.eval_model(
         result_path=name+' '+str(datetime.datetime.now())+".txt",
         experiment_name=name,
-        embed_seeds=True,
-        contrast_num=3
+        embed_seeds=True
     )
     print(f"{name} ChatGPT Score:", results.mean)
 
