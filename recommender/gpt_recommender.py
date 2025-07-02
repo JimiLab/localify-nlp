@@ -8,9 +8,11 @@ from recommender.base_recommender import Recommender
 
 class GPTRecommender(Recommender):
 
-    def __init__(self, artists, prompt, client: OpenAI, seeds=None, embed_prompt=None):
+    def __init__(self, artists, prompt, client: OpenAI, seeds=None, embed_prompt=None, system_prompt=None, system_embed_prompt=None):
         super().__init__(artists, prompt, seeds, embed_prompt)
         self.client = client
+        self.system_prompt = system_prompt
+        self.system_embed_prompt = system_embed_prompt
 
     def recommend(self, seed_ids: List[str], candidate_ids: List[str], use_genres=False, use_wiki=False, embed_seeds=False, contrast_num=0) -> List[str]:
         print('Seeds: ')
@@ -29,9 +31,16 @@ class GPTRecommender(Recommender):
         candidate_dict_text = '\n'.join([f"{candidate_dict[_id]}: {self.artists[_id]['name']}" for _id in candidate_ids])
         _prompt = self.prompt.format(seeds=seed_names, candidates=candidate_names, candidate_key=candidate_dict_text)
         print(_prompt)
+
+        messages = []
+        if self.system_prompt:
+            messages.append({"role": "developer", "content": self.system_prompt})
+
+        messages.append({"role": "user", "content": _prompt})
+
         response = self.client.responses.create(
             model="gpt-4o-mini",
-            input=_prompt
+            input=messages
         )
         text = response.output_text.replace('#', '')
         print("Response Text: ")
@@ -55,9 +64,15 @@ class GPTRecommender(Recommender):
         print("Embed Prompt: ")
         print(_prompt, end="\n\n")
 
+        messages = []
+        if self.system_embed_prompt:
+            messages.append({"role": "developer", "content": self.system_embed_prompt})
+
+        messages.append({"role": "user", "content": _prompt})
+
         response = self.client.responses.create(
             model="gpt-4o-mini",
-            input=_prompt
+            input=messages
         )
         text = response.output_text
         print("Embedded Text: ")

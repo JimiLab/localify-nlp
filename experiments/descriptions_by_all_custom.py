@@ -7,7 +7,7 @@ from utils import load_json, load_yaml
 
 
 def main():
-    name = "Descriptions By Contrast 5"
+    name = "Descriptions By All Custom Example"
 
     artists = load_json("../nlp_artists_filtered.json")
     seeds = load_json("../nlp_seeds_anonymized.json")
@@ -19,7 +19,9 @@ def main():
     prompt = """You are an expert in music recommendation. Your specialty is in ranking a list of artists based on a textual listening profile that you are provided.
 You are presented with a client with the following listening profile:
 
+\"\"\"
 {seeds}
+\"\"\"
 
 You are asked to use your expert knowledge of musical artists and your complete understanding of the listening profile to rank the following artists (on which you are also an expert) in order from most recommended to least recommended:
 {candidates}
@@ -43,7 +45,17 @@ You are also presented with the following other users' familiar artists:
 {other_seeds}
 
 Give a textual description of this person's listening habits, without using artist names. Focus on how your client's listening habits differ from the habits of the other users (what makes them unique). Do not directly mention these other users, and do not pander to the client. Give an accurate description that gives the best possible summary of the artists that they like.
-The description should be designed such that a third party could use it to make artist recommendations.
+The description should be designed such that a third party could use it to make artist recommendations, and it should follow the following example:
+
+\"\"\"
+My music taste is a mix of pop, musical theatre, r&b and dance/electronic. I used to be in theatre, so I love a great singer, and I really value the quality of voice and the skill of the band. As such, I love when artists use real instruments and studio musicians. 
+I do also like music at the other side of the spectrum that's electronic, but not synth trying to be instruments. 
+I like upbeat music, so I don't usually listen to sad songs but I will if the vocals are amazing, and I love a dreamy relaxing r&b track. 
+I also love a rap feature on a pop song.
+\"\"\"
+
+as a structure and guide, but the details should pertain to the client it is written for.
+The description should be written in first-person, from the perspective of the client.
 """
 
     gpt = GPTRecommender(artists, prompt, client, embed_prompt=embed_prompt, seeds=seeds)
