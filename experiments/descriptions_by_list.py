@@ -7,7 +7,7 @@ from utils import load_json, load_yaml
 
 
 def main():
-    name = "Descriptions By Contrast"
+    name = "Descriptions By List"
 
     artists = load_json("../nlp_artists_filtered.json")
     seeds = load_json("../nlp_seeds_anonymized.json")
@@ -39,19 +39,16 @@ With each hashtag replaced by the artist you recommend in that position. You mus
     embed_prompt = """You are an expert in describing people's music listening habits. You are presented with a client who listens to the following artists:
 {seeds}
 
-You are also presented with the following other users' familiar artists:
-{other_seeds}
-
-Give a textual description of this person's listening habits, without using artist names. Focus on how your client's listening habits differ from the habits of the other users (what makes them unique). Do not directly mention these other users, and do not pander to the client. Give an accurate description that gives the best possible summary of the artists that they like.
+Give a clear, concise textual description of this person's listening habits, without using artist names. Write this description in the form of a short bullet-point list, where each bullet point is a meaningful aspect of the client's artist preferences.
+Do not pander to the client. Give an accurate description that gives the best possible summary of the artists that they like. The description should be designed such that a third party could use it to make artist recommendations.
 """
 
-    gpt = GPTRecommender(artists, prompt, client, embed_prompt=embed_prompt, seeds=seeds)
+    gpt = GPTRecommender(artists, prompt, client, embed_prompt=embed_prompt)
     evaluator = Evaluator(gpt, artist_ids, seeds)
     results = evaluator.eval_model(
         result_path=name+' '+str(datetime.datetime.now())+".txt",
         experiment_name=name,
-        embed_seeds=True,
-        contrast_num=5
+        embed_seeds=True
     )
     print(f"{name} ChatGPT Score:", results.mean)
 
