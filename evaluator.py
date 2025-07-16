@@ -58,9 +58,9 @@ class Evaluator:
         for seed_ids in self.seed_lists:
             score = self.do_trial(seed_ids, use_genres, use_wiki, embed_seeds, contrast_num)
             print('Score:', score)
-            if score != -1:
-                scores.append(score)
+            scores.append(score)
         print(scores)
+        scores_successful = [score for score in scores if score != -1]
 
         score_tracker = {}
         try:
@@ -78,10 +78,10 @@ class Evaluator:
         open("Score Tracker.json", 'w').write(json.dumps(score_tracker, indent=4))
 
         results = ResultsContainer(
-            mean=np.mean(scores),
-            sd=np.std(scores),
-            min=np.min(scores),
-            max=np.max(scores)
+            mean=np.mean(scores_successful),
+            sd=np.std(scores_successful),
+            min=np.min(scores_successful),
+            max=np.max(scores_successful)
         )
         results.to_file(result_path, experiment_name)
         return results
