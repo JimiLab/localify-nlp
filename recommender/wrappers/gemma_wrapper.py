@@ -1,27 +1,30 @@
 class GemmaWrapper:
 
-    def __init__(self, model, tokenizer, system_prompt):
+    def __init__(self, model, tokenizer):
         self.model = model
         self.tokenizer = tokenizer
-        self.system_prompt = system_prompt
 
     def get_messages(self, system_message, user_message):
-        messages = [
-            [
+        messages = [[]]
+
+        if system_message is not None and len(system_message) > 0:
+            messages[0].append(
                 {
                     "role": "system",
                     "content": [{"type": "text", "text": system_message}, ]
                 },
-                {
-                    "role": "user",
-                    "content": [{"type": "text", "text": user_message}, ]
-                },
-            ],
-        ]
+            )
+
+        messages[0].append(
+            {
+                "role": "user",
+                "content": [{"type": "text", "text": user_message}, ]
+            },
+        )
         return messages
 
-    def get_response(self, prompt):
-        messages = self.get_messages(self.system_prompt, prompt)
+    def get_response(self, prompt, system_prompt=None):
+        messages = self.get_messages(system_prompt, prompt)
 
         inputs = self.tokenizer.apply_chat_template(
             messages, add_generation_prompt=True, tokenize=True,

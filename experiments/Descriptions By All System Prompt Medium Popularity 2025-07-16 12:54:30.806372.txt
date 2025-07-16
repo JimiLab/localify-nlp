@@ -1,0 +1,6 @@
+Descriptions By All System Prompt Medium Popularity
+
+Mean: 0.7562155262440801
+SD: 0.17624522435841883
+Min: 0.1111111111111111
+Max: 1.0

@@ -1,0 +1,6 @@
+Descriptions By List
+
+Mean: 0.7616447272272464
+SD: 0.14316278003879848
+Min: 0.3125
+Max: 1.0

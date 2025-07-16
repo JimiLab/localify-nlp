@@ -1,0 +1,6 @@
+Descriptions By Example
+
+Mean: 0.7601659273413804
+SD: 0.13950986281088895
+Min: 0.375
+Max: 1.0

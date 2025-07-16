@@ -1,0 +1,6 @@
+Descriptions By All System Prompt Low Popularity
+
+Mean: 0.7382362549906276
+SD: 0.1403270556997809
+Min: 0.3611111111111111
+Max: 1.0

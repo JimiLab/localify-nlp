@@ -1,0 +1,6 @@
+Descriptions By All System Prompt
+
+Mean: 0.7682137904936713
+SD: 0.13889029573884976
+Min: 0.375
+Max: 1.0

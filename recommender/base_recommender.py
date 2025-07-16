@@ -8,13 +8,16 @@ from typing import List
 
 class Recommender:
 
-    def __init__(self, artists, prompt, seeds=None, embed_prompt=None):
+    def __init__(self, artists, prompt, seeds=None, embed_prompt=None, system_prompt=None, system_embed_prompt=None):
         # essentially json of {artist_id: artist_data (genres tags, wiki, etc)}
         self.artists = artists
         self.prompt = prompt
         self.embed_prompt = embed_prompt
         # a list of lists of UUIDs representing artists
         self.seeds = seeds
+
+        self.system_prompt = system_prompt
+        self.system_embed_prompt = system_embed_prompt
 
     def recommend(self, seed_ids: List[str], candidate_ids: List[str], use_genres=False, use_wiki=False, embed_seeds=False, embed_contrast=False) -> List[str]:
         raise NotImplementedError(f'{self.__class__} class is an interface and not intended for instantiation.')

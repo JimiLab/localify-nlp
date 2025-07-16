@@ -9,10 +9,8 @@ from recommender.base_recommender import Recommender
 class GPTRecommender(Recommender):
 
     def __init__(self, artists, prompt, client: OpenAI, seeds=None, embed_prompt=None, system_prompt=None, system_embed_prompt=None):
-        super().__init__(artists, prompt, seeds, embed_prompt)
+        super().__init__(artists, prompt, seeds, embed_prompt, system_prompt, system_embed_prompt)
         self.client = client
-        self.system_prompt = system_prompt
-        self.system_embed_prompt = system_embed_prompt
 
     def recommend(self, seed_ids: List[str], candidate_ids: List[str], use_genres=False, use_wiki=False, embed_seeds=False, contrast_num=0) -> List[str]:
         print('Seeds: ')
