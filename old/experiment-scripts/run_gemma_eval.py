@@ -193,7 +193,7 @@ ckpt = "google/gemma-3-4b-it"
 gemma_model = Gemma3ForCausalLM.from_pretrained(
     ckpt,
     torch_dtype=torch.bfloat16,
-    device_map="cpu",
+    device_map="auto",
     use_auth_token=conf['gemma-key'],
     low_cpu_mem_usage=True,
 )
