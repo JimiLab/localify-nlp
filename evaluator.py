@@ -1,3 +1,5 @@
+import json
+
 import numpy as np
 from math import ceil
 from random import shuffle, sample
@@ -59,6 +61,22 @@ class Evaluator:
             if score != -1:
                 scores.append(score)
         print(scores)
+
+        score_tracker = {}
+        try:
+            score_tracker = json.load(open("Score Tracker.json"))
+        except (FileNotFoundError, json.JSONDecodeError) as ignored:
+            print("Failed to read score tracker file. Writing a new one.")
+
+        score_key = experiment_name.lower().replace(' ', '_')
+        if score_key in score_tracker:
+            score_tracker[score_key].append(scores)
+        else:
+            score_tracker[score_key] = []
+            score_tracker[score_key].append(scores)
+
+        open("Score Tracker.json", 'w').write(json.dumps(score_tracker, indent=4))
+
         results = ResultsContainer(
             mean=np.mean(scores),
             sd=np.std(scores),
