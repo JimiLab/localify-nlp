@@ -38,7 +38,7 @@ for key, value in tracker_flat.items():
 
 csv = ""
 for value in tracker_flat.values():
-    csv += f"{value['mean_success']}, {value['popularity']['mean']}\n"
+    csv += f"{value['mean_success']}, {value['popularity']['sd']}\n"
 open("out.csv", 'w').write(csv.strip())
 
 open("experiments/Score Tracker Flat.json", 'w').write(json.dumps(tracker_flat, indent=4))
