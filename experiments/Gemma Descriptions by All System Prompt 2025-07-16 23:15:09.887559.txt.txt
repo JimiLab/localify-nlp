@@ -1,0 +1,6 @@
+Gemma Descriptions By All System Prompt
+
+Mean: 0.6754511996209787
+SD: 0.14082852161236684
+Min: 0.0625
+Max: 1.0

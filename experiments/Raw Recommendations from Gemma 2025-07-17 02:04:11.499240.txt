@@ -1,0 +1,6 @@
+Raw Recommendations from Gemma
+
+Mean: 0.6874995067733339
+SD: 0.13125085971228173
+Min: 0.41713014460511677
+Max: 1.0
