@@ -7,7 +7,8 @@ from typing import Tuple
 from math import ceil
 from random import sample
 import numpy as np
-import torch, gc
+import torch
+import gc
 from transformers import AutoTokenizer, Gemma3ForCausalLM
 
 
