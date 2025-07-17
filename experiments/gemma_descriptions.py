@@ -64,7 +64,7 @@ You are able to perfectly rank these artists in order of preference, where prefe
     system_embed_prompt = """You are an expert in describing people's music listening habits. 
 You are experienced in writing clear, concise, and descriptive summaries of people's listening habits based on a list of artists that they like."""
 
-    name = "Gemma Descriptions By Example"
+    name = "Gemma Descriptions"
 
     gw = GemmaWrapper(gemma_model, gemma_tokenizer)
     gemma = InternalRecommender(artists, prompt, gw,
