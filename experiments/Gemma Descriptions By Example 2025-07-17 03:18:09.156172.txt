@@ -1,0 +1,6 @@
+Gemma Descriptions By Example
+
+Mean: 0.7037956160028515
+SD: 0.13914697511907104
+Min: 0.3125
+Max: 1.0

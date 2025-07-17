@@ -43,7 +43,7 @@ open("nlp_seeds_split.json", 'w').write(json.dumps(seeds_split, indent=4))
 seeds_categorized = {"low": [], "med": [], "high": []}
 for user_seeds_split in seeds_split:
     for key in seeds_categorized.keys():
-        if len(user_seeds_split[key]) >= 6:
+        if len(user_seeds_split[key]) >= 10:
             seeds_categorized[key].append(user_seeds_split[key])
 
 print("Users Available:")
