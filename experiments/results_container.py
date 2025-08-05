@@ -8,12 +8,14 @@ class ResultsContainer:
     sd: np.ndarray
     min: float
     max: float
+    se: np.ndarray
 
     def to_file(self, filepath, experiment_name) -> None:
         formattable = """{name}
 
 Mean: {mean}
 SD: {sd}
+SE: {se}
 Min: {min}
 Max: {max}
 """
@@ -23,6 +25,7 @@ Max: {max}
                 name=experiment_name,
                 mean=self.mean,
                 sd=self.sd,
+                se=self.se,
                 min=self.min,
                 max=self.max
             ))

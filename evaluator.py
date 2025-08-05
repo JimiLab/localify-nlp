@@ -1,4 +1,5 @@
 import json
+import math
 
 import numpy as np
 from math import ceil
@@ -80,6 +81,7 @@ class Evaluator:
         results = ResultsContainer(
             mean=np.mean(scores_successful),
             sd=np.std(scores_successful),
+            se=np.std(scores_successful) / math.sqrt(len(self.seed_lists)),
             min=np.min(scores_successful),
             max=np.max(scores_successful)
         )

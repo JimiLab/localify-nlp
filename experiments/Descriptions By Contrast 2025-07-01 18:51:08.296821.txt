@@ -1,0 +1,6 @@
+Descriptions By Contrast
+
+Mean: 0.7576152112862855
+SD: 0.13401027127283954
+Min: 0.4453125
+Max: 1.0
